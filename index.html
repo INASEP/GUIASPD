@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Credencial Guardia de Seguridad SPD · INASEP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --dark:   #0d2213;
+      --forest: #1a4028;
+      --green:  #2d6a4f;
+      --mid:    #40916c;
+      --light:  #52b788;
+      --pale:   #b7e4c7;
+      --mint:   #e8f5ee;
+      --cream:  #f4faf6;
+      --white:  #ffffff;
+      --gold:   #f9c74f;
+      --red:    #e63946;
+      --gray:   #5a7a68;
+      --lgray:  #c8ddd2;
+      --success:#2dc653;
+      --shadow: rgba(13,34,19,0.11);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--dark);min-height:100vh;}
+
+    /* ── HERO ── */
+    .hero{background:linear-gradient(150deg,var(--dark) 0%,var(--forest) 55%,var(--green) 100%);padding:0 0 52px;position:relative;overflow:hidden;}
+    .hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 15% 50%,rgba(82,183,136,.18) 0%,transparent 55%),radial-gradient(circle at 85% 20%,rgba(45,106,79,.25) 0%,transparent 50%);}
+    .hero::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:36px;background:var(--cream);clip-path:ellipse(55% 100% at 50% 100%);}
+
+    /* topbar */
+    .topbar{background:rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.1);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+    .topbar-brand{font-family:'Sora',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--pale);}
+    .topbar-law{background:rgba(249,199,79,.18);border:1px solid rgba(249,199,79,.4);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:99px;}
+
+    /* logo hero */
+    .logo-block{display:flex;justify-content:center;padding:36px 24px 28px;position:relative;z-index:1;}
+    .logo-frame{background:rgba(255,255,255,.07);border:2px dashed rgba(255,255,255,.22);border-radius:20px;width:220px;height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+    .logo-frame img{max-height:72px;max-width:200px;object-fit:contain;display:none;}
+    .logo-frame.loaded{border-style:solid;border-color:rgba(255,255,255,.18);}
+    .logo-frame.loaded img{display:block;}
+    .logo-hint{font-family:'Sora',sans-serif;font-size:11px;color:rgba(255,255,255,.4);text-align:center;line-height:1.5;}
+    .logo-hint strong{color:rgba(255,255,255,.6);display:block;}
+    .logo-frame.loaded .logo-hint{display:none;}
+
+    /* hero copy */
+    .hero-copy{text-align:center;padding:0 24px;position:relative;z-index:1;}
+    .hero-chip{display:inline-flex;align-items:center;gap:7px;background:rgba(82,183,136,.25);border:1px solid rgba(82,183,136,.5);color:var(--pale);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin-bottom:20px;}
+    .hero h1{font-family:'Sora',sans-serif;font-size:clamp(26px,5.5vw,44px);font-weight:800;color:var(--white);line-height:1.15;margin-bottom:14px;}
+    .hero h1 em{color:var(--light);font-style:normal;}
+    .hero-sub{font-size:15px;color:rgba(255,255,255,.7);max-width:540px;margin:0 auto;line-height:1.65;}
+
+    /* ── PROGRESS ── */
+    .prog-strip{background:var(--white);border-bottom:1px solid var(--lgray);padding:16px 24px;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px var(--shadow);}
+    .prog-inner{max-width:740px;margin:0 auto;}
+    .prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
+    .prog-label{font-family:'Sora',sans-serif;font-size:12px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:1px;}
+    .prog-count{font-size:12px;color:var(--gray);}
+    .prog-bar{height:9px;background:var(--mint);border-radius:99px;overflow:hidden;}
+    .prog-fill{height:100%;background:linear-gradient(90deg,var(--mid),var(--light));border-radius:99px;transition:width .55s cubic-bezier(.4,0,.2,1);width:0%;}
+
+    /* ── MAIN ── */
+    .main{max-width:740px;margin:0 auto;padding:36px 16px 88px;}
+
+    /* section label */
+    .sec-lbl{font-family:'Sora',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--mid);display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+    .sec-lbl::after{content:'';flex:1;height:1.5px;background:linear-gradient(90deg,var(--pale) 0%,transparent 100%);}
+
+    /* info cards */
+    .info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:36px;}
+    @media(max-width:480px){.info-grid{grid-template-columns:1fr;}}
+    .info-card{background:var(--white);border:1.5px solid var(--lgray);border-radius:16px;padding:18px;box-shadow:0 2px 8px var(--shadow);position:relative;overflow:hidden;}
+    .info-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--light));}
+    .info-card .ic{font-size:26px;margin-bottom:9px;}
+    .info-card h3{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--forest);margin-bottom:5px;}
+    .info-card p{font-size:12.5px;color:var(--gray);line-height:1.55;}
+
+    /* def box */
+    .def-box{background:var(--white);border:1.5px solid var(--lgray);border-left:5px solid var(--mid);border-radius:0 14px 14px 0;padding:18px 20px;margin-bottom:28px;box-shadow:0 2px 8px var(--shadow);}
+    .def-box .def-t{font-family:'Sora',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--mid);margin-bottom:8px;}
+    .def-box p{font-size:14px;color:var(--dark);line-height:1.65;}
+
+    /* law alert */
+    .law-alert{background:linear-gradient(135deg,#e8f5ee,#f0fbf5);border:1.5px solid var(--pale);border-radius:16px;padding:18px 20px;display:flex;gap:16px;align-items:flex-start;margin-bottom:32px;}
+    .law-alert .la-ic{font-size:30px;flex-shrink:0;margin-top:2px;}
+    .law-alert h4{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--forest);margin-bottom:5px;}
+    .law-alert p{font-size:13px;color:var(--green);line-height:1.6;}
+
+    /* step cards */
+    .step-card{background:var(--white);border:2px solid var(--lgray);border-radius:20px;margin-bottom:14px;overflow:hidden;box-shadow:0 2px 10px var(--shadow);transition:box-shadow .25s,border-color .3s;}
+    .step-card:hover{box-shadow:0 6px 28px var(--shadow);}
+    .step-card.done{border-color:var(--success);background:#f5fff9;}
+    .step-card.active{border-color:var(--mid);box-shadow:0 6px 28px rgba(64,145,108,.2);}
+
+    .step-hdr{display:flex;align-items:center;gap:16px;padding:18px 20px;cursor:pointer;user-select:none;}
+    .step-num{min-width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--forest),var(--green));color:var(--white);font-family:'Sora',sans-serif;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .3s;box-shadow:0 3px 10px rgba(26,64,40,.3);}
+    .step-card.done .step-num{background:linear-gradient(135deg,var(--success),#1a9e40);}
+    .step-card.active .step-num{background:linear-gradient(135deg,var(--mid),var(--light));}
+    .step-titles{flex:1;}
+    .step-name{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--dark);line-height:1.25;}
+    .step-sub{font-size:12px;color:var(--gray);margin-top:3px;}
+    .step-arr{font-size:18px;color:var(--lgray);transition:transform .3s,color .2s;}
+    .step-card.active .step-arr{transform:rotate(180deg);color:var(--mid);}
+    .step-card.done .step-arr{color:var(--success);}
+
+    .step-body{display:none;padding:4px 20px 24px;border-top:1.5px solid #eaf2ed;}
+    .step-card.open .step-body{display:block;}
+
+    /* mini steps */
+    .mini-steps{display:flex;gap:8px;flex-wrap:wrap;padding:16px 0 20px;}
+    .mini-step{display:flex;align-items:center;gap:7px;background:var(--mint);border:1px solid var(--pale);border-radius:10px;padding:8px 13px;font-size:12.5px;font-family:'Sora',sans-serif;font-weight:600;color:var(--forest);}
+    .mini-step .msn{width:20px;height:20px;background:var(--green);color:var(--white);border-radius:50%;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+    /* doc checklist */
+    .doc-list{list-style:none;}
+    .doc-item{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid #edf2ef;}
+    .doc-item:last-child{border-bottom:none;}
+    .doc-chk{width:26px;height:26px;border-radius:7px;border:2px solid var(--lgray);background:var(--white);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:1px;}
+    .doc-chk.checked{background:var(--success);border-color:var(--success);}
+    .doc-chk.checked::after{content:'✓';font-size:15px;font-weight:800;color:var(--white);}
+    .doc-info{flex:1;}
+    .doc-name{font-family:'Sora',sans-serif;font-size:13.5px;font-weight:700;color:var(--dark);margin-bottom:4px;line-height:1.3;}
+    .doc-desc{font-size:12.5px;color:var(--gray);line-height:1.6;}
+    .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
+    .tag{display:inline-block;font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:99px;text-transform:uppercase;letter-spacing:.5px;}
+    .tag.gratis{background:#d4edda;color:#145a28;}
+    .tag.costo{background:#fff3cd;color:#7a5500;}
+    .tag.online{background:#cfe2ff;color:#0a3878;}
+    .tag.djurada{background:#f3e8ff;color:#5b2d8a;}
+    .tag.ext{background:#ffe5d0;color:#8a3800;}
+    .tag.cond{background:#e2e8f0;color:#334155;}
+
+    /* tip / alert */
+    .tip{background:#fffbea;border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:14px 16px;margin-top:18px;font-size:13px;color:#5a4a00;line-height:1.6;}
+    .tip strong{color:var(--dark);}
+    .alert-b{background:#fff5f5;border-left:4px solid var(--red);border-radius:0 12px 12px 0;padding:14px 16px;margin-top:14px;font-size:13px;color:#7a1a1a;line-height:1.6;}
+
+    /* btn */
+    .btn-step{margin-top:22px;width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--forest),var(--green));color:var(--white);font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .22s;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 4px 16px rgba(26,64,40,.25);}
+    .btn-step:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,64,40,.3);}
+    .step-card.done .btn-step{background:linear-gradient(135deg,#1a7a3a,var(--success));}
+
+    /* congrats */
+    #congrats{display:none;background:linear-gradient(135deg,#e6fff2,#f0fff7);border:2.5px solid var(--success);border-radius:22px;padding:38px 28px;text-align:center;margin-top:36px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1);}
+    @keyframes popIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+    #congrats .cg-e{font-size:56px;margin-bottom:14px;}
+    #congrats h3{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:#0d5c28;margin-bottom:10px;}
+    #congrats p{color:#1a7a3a;font-size:15px;line-height:1.65;}
+
+    /* contact */
+    .contact-card{background:linear-gradient(150deg,var(--dark) 0%,var(--forest) 100%);border-radius:24px;padding:32px 26px;color:var(--white);margin-top:44px;position:relative;overflow:hidden;}
+    .contact-card::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(82,183,136,.18) 0%,transparent 70%);}
+    .contact-logo-area{display:flex;justify-content:center;margin-bottom:22px;}
+    .contact-logo-frame{background:rgba(255,255,255,.07);border:1.5px dashed rgba(255,255,255,.2);border-radius:16px;width:180px;height:72px;display:flex;align-items:center;justify-content:center;}
+    .contact-logo-frame img{max-height:58px;max-width:160px;object-fit:contain;display:none;}
+    .contact-logo-frame.loaded{border-style:solid;}
+    .contact-logo-frame.loaded img{display:block;}
+    .cl-hint{font-size:11px;color:rgba(255,255,255,.35);text-align:center;line-height:1.5;}
+    .contact-logo-frame.loaded .cl-hint{display:none;}
+    .contact-card h3{font-family:'Sora',sans-serif;font-size:20px;font-weight:800;margin-bottom:6px;text-align:center;}
+    .contact-card>p{font-size:13px;color:rgba(255,255,255,.65);margin-bottom:24px;text-align:center;line-height:1.6;}
+    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    @media(max-width:480px){.contact-grid{grid-template-columns:1fr;}}
+    .ci{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:15px 16px;text-decoration:none;color:var(--white);display:flex;align-items:center;gap:13px;transition:background .2s,transform .15s;}
+    .ci:hover{background:rgba(255,255,255,.15);transform:translateY(-2px);}
+    .ci .ci-ic{font-size:22px;flex-shrink:0;}
+    .ci-lbl{font-size:9.5px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.5);margin-bottom:2px;}
+    .ci-val{font-family:'Sora',sans-serif;font-size:13px;font-weight:600;}
+
+    .footer{text-align:center;padding:28px 20px;font-size:11.5px;color:var(--gray);line-height:1.7;}
+    .footer a{color:var(--green);text-decoration:none;font-weight:600;}
+
+    /* animations */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+    .main>*{animation:fadeUp .5s ease backwards;}
+    .main>*:nth-child(1){animation-delay:.05s;}
+    .main>*:nth-child(2){animation-delay:.1s;}
+    .main>*:nth-child(3){animation-delay:.15s;}
+    .main>*:nth-child(n+4){animation-delay:.2s;}
+  </style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="topbar">
+    <span class="topbar-brand">INASEP · Instituto Nacional de Seguridad Privada</span>
+    <span class="topbar-law">Ley N°21.659 · Vigente desde nov. 2025</span>
+  </div>
+
+  <!-- LOGO — sube logo.png a la misma carpeta del repositorio -->
+  <div class="logo-block">
+    <div class="logo-frame" id="heroLogoFrame">
+      <img src="logo.png" alt="INASEP"
+           onload="document.getElementById('heroLogoFrame').classList.add('loaded')"
+           onerror="this.remove()" />
+      <div class="logo-hint">🛡️<br/><strong>logo.png</strong>Sube tu logo aquí</div>
+    </div>
+  </div>
+
+  <div class="hero-copy">
+    <div class="hero-chip">🛡️ Guía oficial paso a paso</div>
+    <h1>Credencial de<br/><em>Guardia de Seguridad</em><br/>ante la SPD</h1>
+    <p class="hero-sub">Sigue esta guía interactiva para tramitar tu credencial ante la Subsecretaría de Prevención del Delito. Marca cada documento y avanza con confianza.</p>
+  </div>
+</div>
+
+<!-- ═══ PROGRESS ═══ -->
+<div class="prog-strip">
+  <div class="prog-inner">
+    <div class="prog-row">
+      <span class="prog-label">Tu avance</span>
+      <span class="prog-count" id="progCount">0 de 5 pasos completados</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+  </div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+
+  <div class="def-box">
+    <div class="def-t">¿Qué es un Guardia de Seguridad?</div>
+    <p>Es la persona natural que presta servicios de <strong>protección y vigilancia</strong> en recintos o áreas determinadas, <strong>sin autorización para portar armas de fuego</strong>, cumpliendo funciones preventivas y complementarias a la seguridad pública.</p>
+  </div>
+
+  <div class="sec-lbl">¿Qué debes saber?</div>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="ic">⚖️</div>
+      <h3>Nueva normativa vigente</h3>
+      <p>La Ley N°21.659 (publicada el 21/03/2024) entró en vigor el <strong>28 de noviembre de 2025</strong>. Ahora la SPD fiscaliza todo el proceso de acreditación.</p>
+    </div>
+    <div class="info-card">
+      <div class="ic">🕐</div>
+      <h3>Vigencia de la credencial</h3>
+      <p>Tu credencial tiene validez de <strong>3 años</strong>. Antes de vencer, debes realizar el Curso de Perfeccionamiento para renovarla.</p>
+    </div>
+    <div class="info-card">
+      <div class="ic">🔑</div>
+      <h3>Trámite con Clave Única</h3>
+      <p>La solicitud final se realiza <strong>en línea</strong> con tu Clave Única en el portal de la SPD, después de aprobar curso y examen.</p>
+    </div>
+    <div class="info-card">
+      <div class="ic">🌍</div>
+      <h3>¿Puedo postular siendo extranjero?</h3>
+      <p>Sí, si cuentas con <strong>residencia definitiva vigente</strong> en Chile y tus documentos de estudio están apostillados o legalizados.</p>
+    </div>
+  </div>
+
+  <div class="law-alert">
+    <div class="la-ic">📜</div>
+    <div>
+      <h4>Ley N°21.659 · Nueva Ley de Seguridad Privada</h4>
+      <p>Esta ley reemplazó la antigua normativa OS-10. La <strong>Subsecretaría de Prevención del Delito (SPD)</strong> pasó a ser la entidad que acredita y fiscaliza a guardias, empresas y OTEC. <strong>INASEP está acreditado bajo esta nueva normativa.</strong></p>
+    </div>
+  </div>
+
+  <div class="sec-lbl">Los 5 pasos del proceso</div>
+
+  <!-- ══ PASO 1 ══ -->
+  <div class="step-card" id="step1">
+    <div class="step-hdr" onclick="toggleStep(1)">
+      <div class="step-num">1</div>
+      <div class="step-titles">
+        <div class="step-name">Revisa que cumples los requisitos</div>
+        <div class="step-sub">Verifica que calificas antes de iniciar</div>
+      </div>
+      <div class="step-arr">▾</div>
+    </div>
+    <div class="step-body">
+      <div class="mini-steps">
+        <div class="mini-step"><span class="msn">✓</span> Mayor de edad</div>
+        <div class="mini-step"><span class="msn">✓</span> 4° Medio completo</div>
+        <div class="mini-step"><span class="msn">✓</span> Habla castellano</div>
+        <div class="mini-step"><span class="msn">✓</span> Apto físico y psíquico</div>
+        <div class="mini-step"><span class="msn">✓</span> Sin condenas penales</div>
+        <div class="mini-step"><span class="msn">✓</span> Sin expulsión disciplinaria FF.AA.</div>
+        <div class="mini-step"><span class="msn">✓</span> Situación militar al día</div>
+        <div class="mini-step"><span class="msn">✓</span> Curso SPD aprobado</div>
+      </div>
+      <ul class="doc-list">
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Ser mayor de 18 años</div><div class="doc-desc">Tu cédula de identidad acredita esta condición.</div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Educación media completa o equivalente</div><div class="doc-desc">Licencia de 4° Medio. Si no la tienes, existe el examen de equivalencia de estudios (Decreto Exento N°2.272).</div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Comprender y comunicarse en castellano</div><div class="doc-desc">Requisito lingüístico básico para ejercer las funciones del cargo.</div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Condiciones físicas y psíquicas compatibles</div><div class="doc-desc">Debes estar apto para las funciones de seguridad, acreditado mediante certificados médicos.</div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">No haber sido condenado por crimen, simple delito o VIF</div><div class="doc-desc">Incluye condenas por violencia intrafamiliar.</div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">No haber sido expulsado de FF.AA., Carabineros, PDI o Gendarmería por sanción disciplinaria</div><div class="doc-desc">Si nunca perteneciste a ninguna de estas instituciones, se acredita con declaración jurada.</div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">No haber sido acusado por delitos graves</div><div class="doc-desc">Control de Armas, narcotráfico, terrorismo, lavado de activos, Seguridad del Estado o crimen organizado.</div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">No haber sido sancionado por Ley N°19.327 (fútbol profesional)</div><div class="doc-desc">Ley que regula los espectáculos de fútbol profesional en Chile.</div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Haber aprobado el curso de capacitación y examen SPD</div><div class="doc-desc">En una OTEC acreditada por la Subsecretaría de Prevención del Delito, como INASEP.</div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Haber cumplido normas de reclutamiento y movilización, cuando corresponda</div><div class="doc-desc">Situación militar al día según corresponda a tu situación personal.</div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">No haber ejercido funciones de fiscalización en seguridad privada dentro del período de inhabilidad</div><div class="doc-desc">Como integrante de Carabineros u otros órganos competentes, dentro del plazo señalado en el reglamento.</div></div></li>
+      </ul>
+      <div class="tip">💡 <strong>¿Tienes dudas sobre si calificas?</strong> Contáctanos antes de iniciar. En INASEP te orientamos sin costo y evaluamos tu situación personal.</div>
+      <button class="btn-step" onclick="markStep(1)"><span id="btn1-txt">✅ Confirmar que cumplo los requisitos</span></button>
+    </div>
+  </div>
+
+  <!-- ══ PASO 2 ══ -->
+  <div class="step-card" id="step2">
+    <div class="step-hdr" onclick="toggleStep(2)">
+      <div class="step-num">2</div>
+      <div class="step-titles">
+        <div class="step-name">Reúne los documentos de Identidad y Salud</div>
+        <div class="step-sub">4 documentos obligatorios · digitaliza todo</div>
+      </div>
+      <div class="step-arr">▾</div>
+    </div>
+    <div class="step-body">
+      <ul class="doc-list">
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Copia de cédula de identidad por ambos lados</div><div class="doc-desc">Debe ser legible y estar vigente. Acredita que eres mayor de edad.</div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Certificado de licencia de enseñanza media</div><div class="doc-desc">Emitido por el Ministerio de Educación (MINEDUC). Puede ser equivalente al 4° Medio. Si eres extranjero, debe presentarse <strong>legalizado o apostillado</strong>.</div><div class="tags"><span class="tag ext">Apostilla si eres extranjero</span></div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Certificado médico físico (médico cirujano)</div><div class="doc-desc">Emitido por médico cirujano inscrito en el <strong>Registro Nacional de Prestadores Individuales de Salud</strong>. Acredita condiciones físicas compatibles con funciones de seguridad. Válido en CESFAM, clínicas o médico privado.</div><div class="tags"><span class="tag costo">Tiene costo</span><span class="tag online">Centros de salud públicos y privados</span></div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Certificado de salud psíquica (psicólogo o psiquiatra)</div><div class="doc-desc">Emitido por psicólogo o psiquiatra inscrito en el Registro de Prestadores Individuales de Salud. Acredita condiciones psíquicas compatibles con el cargo. <strong>En INASEP contamos con psicóloga acreditada.</strong></div><div class="tags"><span class="tag costo">Valor $10.000 en INASEP</span></div></div></li>
+      </ul>
+      <div class="tip">⏰ <strong>Atención con las fechas:</strong> Coordina los certificados médicos cerca de tu fecha de tramitación. No deben estar vencidos al momento de presentarlos.</div>
+      <button class="btn-step" onclick="markStep(2)"><span id="btn2-txt">✅ Tengo estos documentos</span></button>
+    </div>
+  </div>
+
+  <!-- ══ PASO 3 ══ -->
+  <div class="step-card" id="step3">
+    <div class="step-hdr" onclick="toggleStep(3)">
+      <div class="step-num">3</div>
+      <div class="step-titles">
+        <div class="step-name">Antecedentes, declaraciones y situación legal</div>
+        <div class="step-sub">7 documentos · varios gratuitos en INASEP</div>
+      </div>
+      <div class="step-arr">▾</div>
+    </div>
+    <div class="step-body">
+      <ul class="doc-list">
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Certificado de antecedentes (Ley N°18.216)</div><div class="doc-desc">Acredita no haber sido condenado por crimen, simple delito o actos de violencia intrafamiliar. <strong>Antigüedad máxima: 30 días.</strong> Obtención en el Registro Civil o en línea con Clave Única.</div><div class="tags"><span class="tag gratis">Gratis con Clave Única</span><span class="tag online">Disponible en línea</span></div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Certificado de no expulsión de FF.AA. o instituciones de orden por sanción disciplinaria</div><div class="doc-desc">Si nunca perteneciste a las Fuerzas Armadas, Carabineros, PDI ni Gendarmería, puedes reemplazarlo con una <strong>declaración jurada simple</strong>. En INASEP te la preparamos.</div><div class="tags"><span class="tag djurada">DJ simple si nunca perteneciste</span><span class="tag gratis">Gratis en INASEP</span></div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Declaración jurada simple: no acusación por delitos graves</div><div class="doc-desc">Declara que no has sido acusado por ley sobre Control de Armas, Tráfico Ilícito de Estupefacientes, conductas terroristas, lavado de activos, Seguridad del Estado o crimen organizado.</div><div class="tags"><span class="tag djurada">Declaración jurada simple</span><span class="tag gratis">Gratis en INASEP</span></div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Declaración jurada simple: no sancionado por Ley N°19.327 (fútbol profesional)</div><div class="doc-desc">Declara que no has sido sancionado por la ley que regula los espectáculos de fútbol profesional.</div><div class="tags"><span class="tag djurada">Declaración jurada simple</span><span class="tag gratis">Gratis en INASEP</span></div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Certificado de situación militar al día (DGMN)</div><div class="doc-desc">Emitido por la Dirección General de Movilización Nacional. Solo cuando corresponda según tu situación personal. Si está disponible en línea, en INASEP te ayudamos con tu Clave Única.</div><div class="tags"><span class="tag cond">Solo cuando corresponda</span><span class="tag gratis">Gratis con Clave Única</span></div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Certificado de no haber ejercido funciones de fiscalización en seguridad privada</div><div class="doc-desc">Acredita que no has ejercido funciones de supervisión, control o fiscalización en seguridad privada durante los últimos <strong>dos años</strong> (como integrante de Carabineros u otros órganos competentes). Si nunca perteneciste, adjuntar declaración jurada.</div><div class="tags"><span class="tag djurada">DJ simple si nunca perteneciste</span><span class="tag gratis">Gratis en INASEP</span></div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Certificado de residencia definitiva en Chile</div><div class="doc-desc">Solo para personas extranjeras. Emitido por el Servicio Nacional de Migraciones. Acredita residencia definitiva vigente.</div><div class="tags"><span class="tag ext">Solo para extranjeros</span></div></div></li>
+      </ul>
+      <div class="tip">⚠️ <strong>El certificado de antecedentes vence en 30 días.</strong> Es el documento con el plazo más corto. Obtenlo lo más cerca posible de la fecha de tramitación ante la SPD.</div>
+      <button class="btn-step" onclick="markStep(3)"><span id="btn3-txt">✅ Tengo estos documentos</span></button>
+    </div>
+  </div>
+
+  <!-- ══ PASO 4 ══ -->
+  <div class="step-card" id="step4">
+    <div class="step-hdr" onclick="toggleStep(4)">
+      <div class="step-num">4</div>
+      <div class="step-titles">
+        <div class="step-name">Realiza el Curso de Capacitación y aprueba el examen SPD</div>
+        <div class="step-sub">OTEC acreditada SPD · Presencial en INASEP</div>
+      </div>
+      <div class="step-arr">▾</div>
+    </div>
+    <div class="step-body">
+      <ul class="doc-list">
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Inscribirse en INASEP (OTEC acreditada por la SPD)</div><div class="doc-desc">Debes estudiar en una institución con acreditación vigente de la Subsecretaría de Prevención del Delito. INASEP cuenta con resolución oficial y cuerpo docente acreditado bajo la Ley 21.659. Inscripción presencial o por teléfono/WhatsApp.</div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Completar el Curso de Formación Guardia de Seguridad</div><div class="doc-desc">Duración: <strong>1 semana (36 horas)</strong>. Modalidad presencial. Incluye técnicas de seguridad, defensa personal, legislación, primeros auxilios y Derechos Humanos (obligatorio en la nueva normativa).</div><div class="tags"><span class="tag costo">Valor: $120.000</span></div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Rendir y aprobar el examen correspondiente</div><div class="doc-desc">Una vez finalizado el curso, debes rendir el examen requerido por la SPD. La aprobación es obligatoria para continuar el proceso.</div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Obtener el Certificado de aprobación del curso de capacitación de seguridad privada, emitido por la SPD</div><div class="doc-desc">Este certificado —emitido directamente por la Subsecretaría de Prevención del Delito— es el documento oficial que acredita tu formación. Es uno de los requisitos para solicitar la credencial. Guárdalo en digital y físico.</div></div></li>
+      </ul>
+      <div class="alert-b">🚨 <strong>Importante:</strong> Aprobar el curso <u>no garantiza automáticamente</u> la credencial. La tramitación final es responsabilidad del alumno ante la SPD mediante Clave Única. INASEP te orienta en todo el proceso.</div>
+      <button class="btn-step" onclick="markStep(4)"><span id="btn4-txt">✅ Aprobé el curso y tengo el certificado SPD</span></button>
+    </div>
+  </div>
+
+  <!-- ══ PASO 5 ══ -->
+  <div class="step-card" id="step5">
+    <div class="step-hdr" onclick="toggleStep(5)">
+      <div class="step-num">5</div>
+      <div class="step-titles">
+        <div class="step-name">Envía tu solicitud y obtén tu credencial</div>
+        <div class="step-sub">Portal SPD · Con Clave Única · Trámite en línea</div>
+      </div>
+      <div class="step-arr">▾</div>
+    </div>
+    <div class="step-body">
+      <ul class="doc-list">
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Inicia sesión con Clave Única en el portal SPD</div><div class="doc-desc">Ingresa a <strong>subprevenciondeldelito.gob.cl</strong> → sección "Trámites Digitales". Selecciona la solicitud de credencial de Guardia de Seguridad. Necesitas Clave Única activa y vigente.</div><div class="tags"><span class="tag online">100% en línea</span><span class="tag gratis">Sin costo adicional</span></div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Digitaliza y adjunta toda la documentación requerida</div><div class="doc-desc">Sube los documentos de los pasos 2, 3 y 4 en formato PDF o imagen legible. Todos deben estar completos, vigentes y ser verificables.</div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Completa el formulario y envía la solicitud</div><div class="doc-desc">Llena todos los campos requeridos y envía. Recibirás un <strong>correo de confirmación dentro de las 72 horas hábiles</strong>. Guarda el número de seguimiento.</div></div></li>
+        <li class="doc-item"><div class="doc-chk" onclick="this.classList.toggle('checked')"></div><div class="doc-info"><div class="doc-name">Recibe y gestiona tu credencial SPD</div><div class="doc-desc">Una vez aprobada, obtienes tu credencial con <strong>3 años de vigencia</strong>. Podrás ejercer legalmente como Guardia de Seguridad en Chile: condominios, industrias, eventos masivos, estadios y más.</div><div class="tags"><span class="tag gratis">¡Meta alcanzada! 🎉</span></div></div></li>
+      </ul>
+      <div class="tip">🔔 <strong>Recuerda renovar a tiempo:</strong> Antes del vencimiento de los 3 años debes realizar el Curso de Perfeccionamiento (36 horas) en una OTEC acreditada. No esperes al último momento para evitar trabajar sin credencial vigente.</div>
+      <button class="btn-step" onclick="markStep(5)"><span id="btn5-txt">✅ Solicitud enviada a la SPD</span></button>
+    </div>
+  </div>
+
+  <!-- CONGRATS -->
+  <div id="congrats">
+    <div class="cg-e">🎉</div>
+    <h3>¡Completaste todos los pasos!</h3>
+    <p>Tienes todo lo necesario para obtener tu credencial ante la Subsecretaría de Prevención del Delito.<br/>Si tienes dudas, <strong>contáctanos — estamos para ayudarte en cada etapa.</strong></p>
+  </div>
+
+  <!-- CONTACTO -->
+  <div class="contact-card">
+    <div class="contact-logo-area">
+      <div class="contact-logo-frame" id="contactLogoFrame">
+        <img src="logo.png" alt="INASEP"
+             onload="document.getElementById('contactLogoFrame').classList.add('loaded')"
+             onerror="this.remove()" />
+        <div class="cl-hint">🛡️ logo.png</div>
+      </div>
+    </div>
+    <h3>¿Necesitas ayuda? Contáctanos</h3>
+    <p>En INASEP te acompañamos desde el curso hasta la tramitación de tu credencial. Más de 15 años en el rubro de la seguridad privada.</p>
+    <div class="contact-grid">
+      <a class="ci" href="tel:+56944061866"><span class="ci-ic">📱</span><div><div class="ci-lbl">WhatsApp / Celular</div><div class="ci-val">+56 9 4406 1866</div></div></a>
+      <a class="ci" href="tel:322151748"><span class="ci-ic">☎️</span><div><div class="ci-lbl">Teléfono fijo</div><div class="ci-val">(32) 215 1748</div></div></a>
+      <a class="ci" href="https://maps.google.com/?q=Aníbal+Pinto+875,+Quilpué" target="_blank" rel="noopener"><span class="ci-ic">📍</span><div><div class="ci-lbl">Dirección</div><div class="ci-val">Aníbal Pinto 875, Of. C · Quilpué</div></div></a>
+      <a class="ci" href="https://www.inasep.cl" target="_blank" rel="noopener"><span class="ci-ic">🌐</span><div><div class="ci-lbl">Sitio web</div><div class="ci-val">www.inasep.cl</div></div></a>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<div class="footer">
+  Guía elaborada por <a href="https://www.inasep.cl" target="_blank">INASEP · Instituto Nacional de Seguridad Privada</a><br/>
+  OTEC Acreditada por la Subsecretaría de Prevención del Delito · Ley N°21.659<br/>
+  Esta guía es de carácter orientativo. Verifica siempre los requisitos actualizados en el portal oficial de la SPD.
+</div>
+
+<script>
+  const TOTAL = 5;
+  const done  = new Set();
+  const btns  = {
+    1:'✅ Confirmar que cumplo los requisitos',
+    2:'✅ Tengo estos documentos',
+    3:'✅ Tengo estos documentos',
+    4:'✅ Aprobé el curso y tengo el certificado SPD',
+    5:'✅ Solicitud enviada a la SPD'
+  };
+
+  function updateProgress(){
+    const pct = Math.round(done.size/TOTAL*100);
+    document.getElementById('progFill').style.width = pct+'%';
+    document.getElementById('progCount').textContent = done.size+' de '+TOTAL+' pasos completados';
+    if(done.size===TOTAL){
+      const cg=document.getElementById('congrats');
+      cg.style.display='block';
+      setTimeout(()=>cg.scrollIntoView({behavior:'smooth',block:'center'}),100);
+    }
+  }
+
+  function toggleStep(n){
+    const card=document.getElementById('step'+n);
+    const isOpen=card.classList.contains('open');
+    document.querySelectorAll('.step-card').forEach(c=>c.classList.remove('open','active'));
+    if(!isOpen){card.classList.add('open','active');}
+  }
+
+  function markStep(n){
+    const card=document.getElementById('step'+n);
+    const btn =document.getElementById('btn'+n+'-txt');
+    if(done.has(n)){
+      done.delete(n);
+      card.classList.remove('done');
+      btn.textContent=btns[n];
+    } else {
+      done.add(n);
+      card.classList.add('done');
+      card.classList.remove('open','active');
+      btn.textContent='↩️ Desmarcar este paso';
+      if(n<TOTAL){
+        const next=document.getElementById('step'+(n+1));
+        next.classList.add('open','active');
+        setTimeout(()=>next.scrollIntoView({behavior:'smooth',block:'start'}),160);
+      }
+    }
+    updateProgress();
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById('step1').classList.add('open','active');
+  });
+</script>
+</body>
+</html>
